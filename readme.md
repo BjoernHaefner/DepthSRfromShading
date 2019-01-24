@@ -1,5 +1,5 @@
 # DepthSRfromShading
-This code implements the approach for the following [research paper](https://vision.in.tum.de/members/haefner):
+This code implements the approach for the following [research paper](https://vision.in.tum.de/_media/spezial/bib/haefner2018cvpr.pdf):
 
 > **Fight ill-posedness with ill-posedness: Single-shot variational depth super-resolution from shading**  
 > *B. Haefner, Y. Quéau, T. Möllenhoff, D. Cremers; Computer Vision and Pattern Recognition (CVPR), 2018.*  
