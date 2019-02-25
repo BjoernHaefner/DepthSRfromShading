@@ -56,16 +56,19 @@ params.tol = 1e-5;       % Stoping criterion / tolerance
 params.tol_EL = 5e-6;
 params.max_iter = 100;    % Maximum number of iteration
 
-% flag
+%% already have a guess for the albedo ?
+% params.albedo = albedo;
+
+%% minor options
+do_save = 1;            % Save workspace as .mat-file to results directory and store depth and albedo estimate as obj file
+
 options.do_display = 0; % Plot the results at each iteration, 0 otherwise.
 % Note do_display also refers to the figure number
+
 options.verbose = 1;    % verbose=0 means no further information is printed
 % verbose=1 means to print high-level information
-% verbose=2 prints some more low-level information
-% of the algorithms used to update each variable.
-% if verbose=2, don't forget to adjust verbose
-% levels in the low-level parameters section
-do_save = 1;            % Save workspace as .mat-file to results directory
+% verbose=2 prints some more low-level information of the algorithms used to update each variable.
+% if verbose==2, don't forget to adjust verbose levels in the low-level parameters section
 
 %% RGB and depth not aligned?
 %If two intrinsic (rgb and depth) cameras are given use the following
@@ -85,7 +88,7 @@ options.ADMM.tau              = 2;    %corresponds to tau in eq (3.13) in the AD
 options.PD.alpha              = -1; %-1 for piecewise constant albedo; >0 for piecwise smooth albedo
 options.PD.maxIter            = 1000;
 options.PD.tol                = 1e-5;
-options.PD.gamma              = 2; 
+options.PD.gamma              = 2;
 options.PD.verbose            = false;
 options.PD.tau                = 0.25;
 options.PD.sigma              = 0.5;
@@ -110,28 +113,13 @@ tic
 [z_est, albedo_est, l_est] = depthSRfromShading(I_noise, z0_noise, mask_sr, K_sr, params, options);
 toc
 %% show results
-   figure(1);subplot(2,2,1); imShow('rgb', I_noise, []); title('input image');
-   if exist('mask_lr','var') && exist('K_lr','var')
-     figure(1);subplot(2,2,2); imShow('depth3d', double(z0_noise), mask_lr, K_lr); title('input depth');
-   end
-   figure(1);subplot(2,2,3); imShow('rgb', albedo_est, []); title('estimated albedo');
-   figure(1);subplot(2,2,4); imShow('depth3d', z_est, mask_sr, K_sr); title('super-resolution depth');
-   drawnow;
-
-%%  print errors (synthetic only)
-if ~isempty(strfind(data_name,'synthetic'))
-  
-  [ rmse_light, ...
-    rmse_albedo, ...
-    rmse_depth_sr, rmse_depth_lr, ...
-    mae_depth_sr, mae_depth_lr] = calcErrors(l, l_est, ...
-    albedo, albedo_est, ...
-    z_gt, z_est, ...
-    z0, z0_noise, ...
-    mask_sr, mask_lr, ...
-    K_sr, K_lr);
-  
+figure(1);subplot(2,2,1); imShow('rgb', I_noise, []); title('input image');
+if exist('mask_lr','var') && exist('K_lr','var')
+  figure(1);subplot(2,2,2); imShow('depth3d', double(z0_noise), mask_lr, K_lr); title('input depth');
 end
+figure(1);subplot(2,2,3); imShow('rgb', albedo_est, []); title('estimated albedo');
+figure(1);subplot(2,2,4); imShow('depth3d', z_est, mask_sr, K_sr); title('super-resolution depth');
+drawnow;
 
 %% save data (optional)
 
@@ -141,17 +129,8 @@ if do_save
   %save result as obj mesh
   depth2Obj(z_est,K_sr,mask_sr,albedo_est,['results/result_',name])
   % save result as mat-file
-  if contains(data_name, 'synthetic')
-    save(['results/result_',name,'.mat'], ...
-      'I_noise', 'K_lr', 'K_sr', 'mask_lr', 'mask_sr', 'z0_noise',...
-      'params','options',...
-      'z_est', 'albedo_est', 'l_est',...
-      'albedo', 'I', 'l', 'z0', 'z_gt',...
-      'rmse_light', 'rmse_albedo', 'rmse_depth_sr', 'rmse_depth_lr', 'mae_depth_sr', 'mae_depth_lr');
-  else
-    save(['results/result_',name,'.mat'], ...
-      'I_noise', 'K_lr', 'K_sr', 'mask_lr', 'mask_sr', 'z0_noise',...
-      'params', 'options',...
-      'z_est', 'albedo_est', 'l_est');
-  end
+  save(['results/result_',name,'.mat'], ...
+    'I_noise', 'K_lr', 'K_sr', 'mask_lr', 'mask_sr', 'z0_noise',...
+    'params', 'options',...
+    'z_est', 'albedo_est', 'l_est');
 end

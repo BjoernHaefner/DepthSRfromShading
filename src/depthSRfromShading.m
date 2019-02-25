@@ -106,6 +106,10 @@ if size(mask,3) > 1
   mask = mask(:,:,1); %make sure mask is only grayscale and thus the same for each channel of the rgb image
 end
 
+if isfield(params,'albedo') && ~isa(params.albedo, 'double')
+  params.albedo = im2double(params.albedo);
+end
+
 img_size = size(I);
 
 if options.do_display
@@ -197,10 +201,15 @@ u = zeros(length(theta),1);
 
 [sph_harm, nb_harmo] = normals2SphericalHarmonics(N, options.harmo_order);
 
-% Initial guess
+% Initial guesses
 lighting = zeros(size(I,3), nb_harmo, size(I,4));
 lighting(:, 3, :) = -1; % lighting (frontal directional)
-albedo = I; %albedo is intensity
+
+if isfield(params,'albedo')
+  albedo = params.albedo; % use given albedo if it exists.
+else
+  albedo = I; %albedo is intensity
+end
 
 % Vectorization
 I = img2Vec(I, mask);% Vectorized intensities
@@ -208,9 +217,10 @@ albedo = img2Vec(albedo, mask); % Vectorized albedo
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% initiate c++/cuda for albedo estimation
-ms = mumfordShahMEX('initMumfordShah', params.lambda/params.gamma, options.PD.alpha, options.PD.maxIter, options.PD.tol, options.PD.gamma, options.PD.verbose, options.PD.tau, options.PD.sigma);
-mumfordShahMEX('setDataMumfordShah', ms,	single(vec2Img(I, img_size, mask)), mask);
-
+if ~isfield(params,'albedo')
+  ms = mumfordShahMEX('initMumfordShah', params.lambda/params.gamma, options.PD.alpha, options.PD.maxIter, options.PD.tol, options.PD.gamma, options.PD.verbose, options.PD.tau, options.PD.sigma);
+  mumfordShahMEX('setDataMumfordShah', ms,	single(vec2Img(I, img_size, mask)), mask);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start algorithm
@@ -227,7 +237,9 @@ for iter = 1:params.max_iter
     fprintf('Update albedo');
   end
   t_start = tic;
-  [albedo] = albedoUpdate(sph_harm*lighting', albedo, mask, img_size, ms);
+  if ~isfield(params,'albedo')
+    [albedo] = albedoUpdate(sph_harm*lighting', albedo, mask, img_size, ms);
+  end
   t_albedo_cur = toc(t_start);
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -326,8 +338,10 @@ for iter = 1:params.max_iter
     albedo_out = vec2Img(albedo, img_size, mask);
     light_out = lighting;
     
-    %close GPU
-    mumfordShahMEX('closeMumfordShah', ms);
+    if ~isfield(params,'albedo')
+      %close GPU
+      mumfordShahMEX('closeMumfordShah', ms);
+    end
     
     if options.verbose
       disp('Done! Enjoy the result.');

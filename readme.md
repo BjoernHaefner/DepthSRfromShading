@@ -128,14 +128,6 @@ options.PCG <struct>
 Along with this comes multiple challenging synthetic and real-world examples ([Download](http://vision.in.tum.de/~haefner/depthsrfromshading_data.zip)):
 
 ```
-% synthetic data
-data_name = 'data/synthetic/constant_480x640to120x160.mat';
-data_name = 'data/synthetic/constant_480x640to240x320.mat';
-data_name = 'data/synthetic/rectcircle_480x640to120x160.mat';
-data_name = 'data/synthetic/rectcircle_480x640to240x320.mat';
-data_name = 'data/synthetic/voronoi_480x640to120x160.mat';
-data_name = 'data/synthetic/voronoi_480x640to240x320.mat';
-
 % real world data
 data_name = 'data/real/android1280x960to640x480.mat';
 data_name = 'data/real/android1280x960to320x240.mat';
