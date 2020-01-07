@@ -8,6 +8,10 @@ This code implements the approach for the following [research paper](https://vis
 
 We put forward a principled variational approach for up-sampling a single depth map to the resolution of the companion color image provided by an RGB-D sensor. We combine heterogeneous depth and color data in order to jointly solve the ill-posed depth super-resolution and shape-from-shading problems. The low-frequency geometric information necessary to disambiguate shape-from-shading is extracted from the low-resolution depth measurements and, symmetrically, the high-resolution photometric clues in the RGB image provide the high-frequency information required to disambiguate depth super-resolution.
 
+## 0. GPU Version
+
+A GPU version of this code has been released [here](https://github.com/fwindolf/sfs-sr-single).
+
 ## 1. Requirements
 
 This code has four third party dependencies:
