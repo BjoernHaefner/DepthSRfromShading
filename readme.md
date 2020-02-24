@@ -129,7 +129,7 @@ options.PCG <struct>
 	options.PCG.maxIter corresponds to maxit in https://de.mathworks.com/help/matlab/ref/pcg.html.
 ```
 ## 4. Examples
-Along with this comes multiple challenging synthetic and real-world examples ([Download](http://vision.in.tum.de/~haefner/depthsrfromshading_data.zip)):
+Along with this comes multiple challenging synthetic and real-world examples ([Website](https://vision.in.tum.de/data/datasets/photometricdepthsr)):
 
 ```
 % real world data
