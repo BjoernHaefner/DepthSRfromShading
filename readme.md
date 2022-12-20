@@ -1,3 +1,4 @@
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 # DepthSRfromShading
 This code implements the approach for the following [research paper](https://vision.in.tum.de/_media/spezial/bib/haefner2018cvpr.pdf):
 
@@ -154,10 +155,7 @@ data_name = 'data/real/wool1280x960to320x240.mat';
 ```
 Just uncomment the corresponding dataset in the `main.m` file to  be able to reconstruct the results from our paper.
 
-## 5. License
-
-DepthSRfromShading is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License, see [here](http://creativecommons.org/licenses/by-nc-sa/4.0/), with an additional request:
-
+## 5. Citation
 If you make use of the library in any form in a scientific publication, please refer to `https://github.com/BjoernHaefner/DepthSRfromShading` and cite the paper
 
 ```
